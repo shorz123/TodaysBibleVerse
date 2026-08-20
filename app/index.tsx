@@ -5,26 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { verses } from '@/data/verses';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
-const verses = [
-  {
-    reference: 'Psalm 23:1',
-    text: 'Yahweh is my shepherd; I shall lack nothing.',
-  },
-  {
-    reference: 'Psalm 46:1',
-    text: 'God is our refuge and strength, a very present help in trouble.',
-  },
-  {
-    reference: 'Romans 8:28',
-    text: 'We know that all things work together for good for those who love God, for those who are called according to his purpose.',
-  },
-  {
-    reference: 'Proverbs 3:5-6',
-    text: "Trust in Yahweh with all your heart, and don't lean on your own understanding. In all your ways acknowledge him, and he will make your paths straight.",
-  },
-];
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -104,6 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingBottom: 200,
   },
   verseText: {
     fontFamily: 'Alex Brush',
