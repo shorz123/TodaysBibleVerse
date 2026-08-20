@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Pressable, PressableStateCallbackType, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -20,6 +20,11 @@ export default function HomeScreen() {
     setVerseIndex(nextVerseIndex);
   }
 
+  function showPreviousVerse() {
+    const previousVerseIndex = (verseIndex - 1 + verses.length) % verses.length;
+    setVerseIndex(previousVerseIndex);
+  }
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -32,39 +37,48 @@ export default function HomeScreen() {
         />
 
         <ThemedView style={styles.verseContainer}>
-          <ThemedText style={styles.verseText}>{currentVerse.text}</ThemedText>
+          <View style={styles.verseTextArea}>
+            <ThemedText style={styles.verseText}>{currentVerse.text}</ThemedText>
 
-          <View
-            style={[
-              styles.divider,
-              {
-                backgroundColor: isDarkMode ? '#FFFFFF' : '#11181C',
-              },
-            ]}
-          />
+            <View
+              style={[
+                styles.divider,
+                {
+                  backgroundColor: isDarkMode ? '#FFFFFF' : '#11181C',
+                },
+              ]}
+            />
 
-          <ThemedText style={styles.reference}>{currentVerse.reference}</ThemedText>
+            <ThemedText style={styles.reference}>{currentVerse.reference}</ThemedText>
+          </View>
+
+          <View style={styles.navigationArea}>
+            <View style={styles.referenceRow}>
+              <Pressable
+                accessibilityLabel="Show previous verse"
+                accessibilityRole="button"
+                hitSlop={16}
+                onPress={showPreviousVerse}
+                style={styles.arrowButton}>
+                <ThemedText style={styles.arrowText}>←</ThemedText>
+              </Pressable>
+
+              <View style={styles.arrowSpacer} />
+
+              <Pressable
+                accessibilityLabel="Show next verse"
+                accessibilityRole="button"
+                hitSlop={16}
+                onPress={showNextVerse}
+                style={styles.arrowButton}>
+                <ThemedText style={styles.arrowText}>→</ThemedText>
+              </Pressable>
+            </View>
+          </View>
         </ThemedView>
-
-        <Pressable
-          accessibilityLabel="Show next Verse"
-          accessibilityRole="button"
-          onPress={showNextVerse}
-          style={getButtonStyle}
-        >
-          <ThemedText style={styles.buttonText}>Show next Verse</ThemedText>
-        </Pressable>
       </SafeAreaView>
     </ThemedView>
   );
-}
-
-function getButtonStyle({ pressed }: PressableStateCallbackType) {
-  if (pressed) {
-    return [styles.button, styles.buttonPressed];
-  }
-
-  return styles.button;
 }
 
 const styles = StyleSheet.create({
@@ -83,10 +97,21 @@ const styles = StyleSheet.create({
   },
   verseContainer: {
     flex: 1,
+    paddingHorizontal: 20,
+  },
+  verseTextArea: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 200,
+    marginBottom: 100,
+  },
+  navigationArea: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    height: 88,
+    justifyContent: 'flex-end',
+    marginHorizontal: -20,
+    paddingBottom: 8,
   },
   verseText: {
     fontFamily: 'Alex Brush',
@@ -101,32 +126,33 @@ const styles = StyleSheet.create({
     marginTop: 20,
     opacity: 1,
   },
+  referenceRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  arrowButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 64,
+    minWidth: 72,
+  },
+  arrowText: {
+    fontFamily: 'Georgia',
+    fontSize: 38,
+    lineHeight: 44,
+  },
+  arrowSpacer: {
+    flex: 1,
+  },
   reference: {
     fontFamily: 'Alex Brush',
     fontStyle: 'italic',
-    marginTop: 12,
     fontSize: 17,
     fontWeight: '700',
-    textAlign: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 17,
-    borderRadius: 14,
-    backgroundColor: '#385F48',
-  },
-  buttonPressed: {
-    opacity: 0.75,
-    transform: [{ scale: 0.98 }],
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
+    marginTop: 12,
+    width: 150,
     textAlign: 'center',
   },
 });
