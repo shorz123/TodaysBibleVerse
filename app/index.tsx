@@ -59,7 +59,14 @@ export default function HomeScreen() {
                 accessibilityRole="button"
                 hitSlop={16}
                 onPress={showPreviousVerse}
-                style={styles.arrowButton}>
+                style={[
+                  styles.arrowButton,
+                  {
+                    backgroundColor: isDarkMode
+                      ? 'rgba(255, 255, 255, 0.08)'
+                      : 'rgba(17, 24, 28, 0.07)',
+                  },
+                ]}>
                 <ThemedText style={styles.arrowText}>←</ThemedText>
               </Pressable>
 
@@ -70,7 +77,14 @@ export default function HomeScreen() {
                 accessibilityRole="button"
                 hitSlop={16}
                 onPress={showNextVerse}
-                style={styles.arrowButton}>
+                style={[
+                  styles.arrowButton,
+                  {
+                    backgroundColor: isDarkMode
+                      ? 'rgba(255, 255, 255, 0.08)'
+                      : 'rgba(17, 24, 28, 0.07)',
+                  },
+                ]}>
                 <ThemedText style={styles.arrowText}>→</ThemedText>
               </Pressable>
             </View>
@@ -137,6 +151,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 64,
     minWidth: 72,
+    borderRadius: 15,
+    marginBottom: 15,
   },
   arrowText: {
     fontFamily: 'Georgia',
