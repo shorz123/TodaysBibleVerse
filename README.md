@@ -1,50 +1,52 @@
-# Welcome to your Expo app 👋
+Today's Bible Verse
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A cross-platform daily Bible verse and reading reminder app built with React Native and Expo.
 
-## Get started
+Project status
 
-1. Install dependencies
+This project is currently in early development.
 
-   ```bash
-   npm install
-   ```
+Planned features
 
-2. Start the app
+Display one Bible verse each day
 
-   ```bash
-   npx expo start
-   ```
+Schedule a preferred daily reminder time
 
-In the output, you'll find options to open the app in a
+Repeat reminders until the verse is marked as read
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Store settings and reading status locally
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Work without requiring an account
 
-## Get a fresh project
+Support Android and iOS
 
-When you're ready, run:
+Technology
 
-```bash
-npm run reset-project
-```
+React Native
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Expo SDK 54
 
-## Learn more
+Expo Router
 
-To learn more about developing your project with Expo, look at the following resources:
+TypeScript
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Getting started
 
-## Join the community
+Install the dependencies:
 
-Join our community of developers creating universal apps.
+npm install
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Start the project for Expo Go:
+
+npx expo start --go
+
+If the phone cannot connect over the local network:
+
+npx expo start --go --tunnel
+
+Other available commands:
+
+npm run android
+npm run ios
+npm run web
+npm run lint
