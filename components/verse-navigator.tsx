@@ -15,21 +15,35 @@ type VerseNavigatorProps = {
   isDarkMode: boolean;
 };
 
-export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
+export function VerseNavigator({
+  isDarkMode,
+}: VerseNavigatorProps) {
   const [verseIndex, setVerseIndex] = useState(0);
-  const slidePosition = useRef(new Animated.Value(0)).current;
+  const slidePosition = useRef(
+    new Animated.Value(0),
+  ).current;
 
   const currentVerse = verses[verseIndex];
 
   function showNextVerse() {
-    setVerseIndex(function updateVerseIndex(currentIndex) {
+    interruptVerseAnimation();
+
+    setVerseIndex(function updateVerseIndex(
+      currentIndex,
+    ) {
       return (currentIndex + 1) % verses.length;
     });
   }
 
   function showPreviousVerse() {
-    setVerseIndex(function updateVerseIndex(currentIndex) {
-      return (currentIndex - 1 + verses.length) % verses.length;
+    interruptVerseAnimation();
+
+    setVerseIndex(function updateVerseIndex(
+      currentIndex,
+    ) {
+      return (
+        currentIndex - 1 + verses.length
+      ) % verses.length;
     });
   }
 
@@ -47,45 +61,60 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
     slidePosition.setValue(0);
   }
 
-  function changeVerse(direction: 'next' | 'previous') {
-    interruptVerseAnimation();
-
-    if (direction === 'next') {
-      showNextVerse();
-    } else {
-      showPreviousVerse();
-    }
-  }
-
   const swipeResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: function shouldRespondToMovement(_event, gestureState) {
-        const horizontalMovement = Math.abs(gestureState.dx);
-        const verticalMovement = Math.abs(gestureState.dy);
+      onMoveShouldSetPanResponder:
+        function shouldRespondToMovement(
+          _event,
+          gestureState,
+        ) {
+          const horizontalMovement = Math.abs(
+            gestureState.dx,
+          );
 
-        return horizontalMovement > 10 && horizontalMovement > verticalMovement;
-      },
-      onPanResponderGrant: function handleSwipeStart() {
-        interruptVerseAnimation();
-      },
-      onPanResponderMove: function handleSwipeMovement(_event, gestureState) {
-        slidePosition.setValue(gestureState.dx);
-      },
-      onPanResponderRelease: function handleSwipeRelease(_event, gestureState) {
+          const verticalMovement = Math.abs(
+            gestureState.dy,
+          );
 
-        if (gestureState.dx < -50) {
-          changeVerse('next');
-          return;
-        }
+          return (
+            horizontalMovement > 10 &&
+            horizontalMovement > verticalMovement
+          );
+        },
 
-        if (gestureState.dx > 50) {
-          changeVerse('previous');
-          return;
-        }
+      onPanResponderGrant:
+        function handleSwipeStart() {
+          interruptVerseAnimation();
+        },
 
-        returnVerseToCenter();
-      },
-      onPanResponderTerminate: returnVerseToCenter,
+      onPanResponderMove:
+        function handleSwipeMovement(
+          _event,
+          gestureState,
+        ) {
+          slidePosition.setValue(gestureState.dx);
+        },
+
+      onPanResponderRelease:
+        function handleSwipeRelease(
+          _event,
+          gestureState,
+        ) {
+          if (gestureState.dx < -50) {
+            showNextVerse();
+            return;
+          }
+
+          if (gestureState.dx > 50) {
+            showPreviousVerse();
+            return;
+          }
+
+          returnVerseToCenter();
+        },
+
+      onPanResponderTerminate:
+        returnVerseToCenter,
     }),
   ).current;
 
@@ -96,22 +125,31 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
           style={[
             styles.verseTextArea,
             {
-              transform: [{ translateX: slidePosition }],
+              transform: [
+                { translateX: slidePosition },
+              ],
             },
           ]}
-          {...swipeResponder.panHandlers}>
-          <ThemedText style={styles.verseText}>{currentVerse.text}</ThemedText>
+          {...swipeResponder.panHandlers}
+        >
+          <ThemedText style={styles.verseText}>
+            {currentVerse.text}
+          </ThemedText>
 
           <View
             style={[
               styles.divider,
               {
-                backgroundColor: isDarkMode ? '#FFFFFF' : '#11181C',
+                backgroundColor: isDarkMode
+                  ? '#FFFFFF'
+                  : '#11181C',
               },
             ]}
           />
 
-          <ThemedText style={styles.reference}>{currentVerse.reference}</ThemedText>
+          <ThemedText style={styles.reference}>
+            {currentVerse.reference}
+          </ThemedText>
         </Animated.View>
       </View>
 
@@ -121,9 +159,7 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
             accessibilityLabel="Show previous verse"
             accessibilityRole="button"
             hitSlop={16}
-            onPress={function handlePreviousPress() {
-              changeVerse('previous');
-            }}
+            onPress={showPreviousVerse}
             style={[
               styles.arrowButton,
               {
@@ -131,8 +167,11 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
                   ? 'rgba(255, 255, 255, 0.08)'
                   : 'rgba(17, 24, 28, 0.07)',
               },
-            ]}>
-            <ThemedText style={styles.arrowText}>←</ThemedText>
+            ]}
+          >
+            <ThemedText style={styles.arrowText}>
+              ←
+            </ThemedText>
           </Pressable>
 
           <View style={styles.arrowSpacer} />
@@ -141,9 +180,7 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
             accessibilityLabel="Show next verse"
             accessibilityRole="button"
             hitSlop={16}
-            onPress={function handleNextPress() {
-              changeVerse('next');
-            }}
+            onPress={showNextVerse}
             style={[
               styles.arrowButton,
               {
@@ -151,8 +188,11 @@ export function VerseNavigator({ isDarkMode }: VerseNavigatorProps) {
                   ? 'rgba(255, 255, 255, 0.08)'
                   : 'rgba(17, 24, 28, 0.07)',
               },
-            ]}>
-            <ThemedText style={styles.arrowText}>→</ThemedText>
+            ]}
+          >
+            <ThemedText style={styles.arrowText}>
+              →
+            </ThemedText>
           </Pressable>
         </View>
       </View>
