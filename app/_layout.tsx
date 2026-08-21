@@ -1,5 +1,7 @@
+import { CormorantGaramond_400Regular_Italic } from '@expo-google-fonts/cormorant-garamond';
 import { Ionicons } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
@@ -8,13 +10,20 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [fontsLoaded] = useFonts({
+    CormorantGaramond_400Regular_Italic,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: '#358a99',
+          tabBarActiveTintColor: '#ffffff',
         }}
       >
         <Tabs.Screen

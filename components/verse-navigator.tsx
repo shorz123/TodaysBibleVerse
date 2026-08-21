@@ -107,7 +107,11 @@ export function VerseNavigator({
             </ThemedText>
           </Pressable>
 
-          <View style={styles.arrowSpacer} />
+          <View style={styles.arrowSpacer}>
+            <ThemedText style={styles.verseDate}>
+              {formatVerseDate(currentVerse.date)}
+            </ThemedText>
+          </View>
 
           <Pressable
             accessibilityLabel="Show next verse"
@@ -153,9 +157,8 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   verseText: {
-    fontFamily: 'Alex Brush',
-    fontStyle: 'italic',
-    fontSize: 24,
+    fontFamily: 'CormorantGaramond_400Regular_Italic',
+    fontSize: 30,
     lineHeight: 36,
     textAlign: 'center',
   },
@@ -185,11 +188,17 @@ const styles = StyleSheet.create({
     lineHeight: 44,
   },
   arrowSpacer: {
+    alignItems: 'center',
     flex: 1,
+    justifyContent: 'center',
+  },
+  verseDate: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 15,
   },
   reference: {
-    fontFamily: 'Alex Brush',
-    fontStyle: 'italic',
+    color: '#ffffff',
     fontSize: 17,
     fontWeight: '700',
     marginTop: 12,
@@ -197,3 +206,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+function formatVerseDate(date: string) {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const [month, day] = date.split('-').map(Number);
+
+  return `${monthNames[month - 1]} ${day}`;
+}
