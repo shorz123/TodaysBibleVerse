@@ -147,10 +147,10 @@ const styles = StyleSheet.create({
   navigationArea: {
     alignItems: 'center',
     alignSelf: 'stretch',
-    height: 88,
+    height: 104,
     justifyContent: 'flex-end',
     marginHorizontal: -20,
-    paddingBottom: 8,
+    paddingBottom: 24,
   },
   verseText: {
     fontFamily: 'Alex Brush',
