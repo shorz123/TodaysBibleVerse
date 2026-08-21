@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import {
-  Animated,
   PanResponder,
   Pressable,
   StyleSheet,
@@ -19,74 +18,32 @@ export function VerseNavigator({
   isDarkMode,
 }: VerseNavigatorProps) {
   const [verseIndex, setVerseIndex] = useState(0);
-  const slidePosition = useRef(
-    new Animated.Value(0),
-  ).current;
 
   const currentVerse = verses[verseIndex];
 
   function showNextVerse() {
-    interruptVerseAnimation();
-
-    setVerseIndex(function updateVerseIndex(currentIndex) {
+    setVerseIndex(function updateVerseIndex(
+      currentIndex,
+    ) {
       return (currentIndex + 1) % verses.length;
     });
   }
 
   function showPreviousVerse() {
-    interruptVerseAnimation();
-
-    setVerseIndex(function updateVerseIndex(currentIndex) {
-      return (currentIndex - 1 + verses.length) % verses.length;
+    setVerseIndex(function updateVerseIndex(
+      currentIndex,
+    ) {
+      return (
+        currentIndex - 1 + verses.length
+      ) % verses.length;
     });
-  }
-
-  function returnVerseToCenter() {
-    Animated.spring(slidePosition, {
-      toValue: 0,
-      damping: 22,
-      stiffness: 260,
-      useNativeDriver: false,
-    }).start();
-  }
-
-  function interruptVerseAnimation() {
-    slidePosition.stopAnimation();
-    slidePosition.setValue(0);
   }
 
   const swipeResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder:
-        function shouldRespondToMovement(
-          _event,
-          gestureState,
-        ) {
-          const horizontalMovement = Math.abs(
-            gestureState.dx,
-          );
-
-          const verticalMovement = Math.abs(
-            gestureState.dy,
-          );
-
-          return (
-            horizontalMovement > 10 &&
-            horizontalMovement > verticalMovement
-          );
-        },
-
-      onPanResponderGrant:
-        function handleSwipeStart() {
-          interruptVerseAnimation();
-        },
-
-      onPanResponderMove:
-        function handleSwipeMovement(
-          _event,
-          gestureState,
-        ) {
-          slidePosition.setValue(gestureState.dx);
+        function recognizeMovement() {
+          return true;
         },
 
       onPanResponderRelease:
@@ -96,55 +53,37 @@ export function VerseNavigator({
         ) {
           if (gestureState.dx < -50) {
             showNextVerse();
-            return;
-          }
-
-          if (gestureState.dx > 50) {
+          } else if (gestureState.dx > 50) {
             showPreviousVerse();
-            return;
           }
-
-          returnVerseToCenter();
         },
-
-      onPanResponderTerminate:
-        returnVerseToCenter,
     }),
   ).current;
 
   return (
     <ThemedView style={styles.verseContainer}>
-      <View style={styles.verseAnimationViewport}>
-        <Animated.View
+      <View
+        style={styles.verseTextArea}
+        {...swipeResponder.panHandlers}
+      >
+        <ThemedText style={styles.verseText}>
+          {currentVerse.text}
+        </ThemedText>
+
+        <View
           style={[
-            styles.verseTextArea,
+            styles.divider,
             {
-              transform: [
-                { translateX: slidePosition },
-              ],
+              backgroundColor: isDarkMode
+                ? '#FFFFFF'
+                : '#11181C',
             },
           ]}
-          {...swipeResponder.panHandlers}
-        >
-          <ThemedText style={styles.verseText}>
-            {currentVerse.text}
-          </ThemedText>
+        />
 
-          <View
-            style={[
-              styles.divider,
-              {
-                backgroundColor: isDarkMode
-                  ? '#FFFFFF'
-                  : '#11181C',
-              },
-            ]}
-          />
-
-          <ThemedText style={styles.reference}>
-            {currentVerse.reference}
-          </ThemedText>
-        </Animated.View>
+        <ThemedText style={styles.reference}>
+          {currentVerse.reference}
+        </ThemedText>
       </View>
 
       <View style={styles.navigationArea}>
@@ -199,15 +138,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  verseAnimationViewport: {
-    flex: 1,
-    marginBottom: 100,
-    overflow: 'hidden',
-  },
   verseTextArea: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 100,
   },
   navigationArea: {
     alignItems: 'center',
