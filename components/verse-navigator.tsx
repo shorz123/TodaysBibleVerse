@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import {
   PanResponder,
@@ -17,7 +18,9 @@ type VerseNavigatorProps = {
 export function VerseNavigator({
   isDarkMode,
 }: VerseNavigatorProps) {
-  const [verseIndex, setVerseIndex] = useState(0);
+  const [verseIndex, setVerseIndex] = useState(
+    findTodaysVerseIndex,
+  );
 
   const currentVerse = verses[verseIndex];
 
@@ -93,22 +96,27 @@ export function VerseNavigator({
             accessibilityRole="button"
             hitSlop={16}
             onPress={showPreviousVerse}
-            style={[
-              styles.arrowButton,
-              {
-                backgroundColor: isDarkMode
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(17, 24, 28, 0.07)',
-              },
-            ]}
+            style={styles.arrowButton}
           >
-            <ThemedText style={styles.arrowText}>
-              ←
-            </ThemedText>
+            <Ionicons
+              color={
+                isDarkMode
+                  ? 'rgba(255, 255, 255, 0.20)'
+                  : 'rgba(17, 24, 28, 0.16)'
+              }
+              name="chevron-back"
+              size={48}
+            />
           </Pressable>
 
           <View style={styles.arrowSpacer}>
-            <ThemedText style={styles.verseDate}>
+            <ThemedText
+              style={[
+                styles.verseDate,
+                currentVerse.date === getTodaysDate() &&
+                  styles.todaysVerseDate,
+              ]}
+            >
               {formatVerseDate(currentVerse.date)}
             </ThemedText>
           </View>
@@ -118,18 +126,17 @@ export function VerseNavigator({
             accessibilityRole="button"
             hitSlop={16}
             onPress={showNextVerse}
-            style={[
-              styles.arrowButton,
-              {
-                backgroundColor: isDarkMode
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(17, 24, 28, 0.07)',
-              },
-            ]}
+            style={styles.arrowButton}
           >
-            <ThemedText style={styles.arrowText}>
-              →
-            </ThemedText>
+            <Ionicons
+              color={
+                isDarkMode
+                  ? 'rgba(255, 255, 255, 0.20)'
+                  : 'rgba(17, 24, 28, 0.16)'
+              }
+              name="chevron-forward"
+              size={48}
+            />
           </Pressable>
         </View>
       </View>
@@ -179,13 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 64,
     minWidth: 72,
-    borderRadius: 15,
     marginBottom: 15,
-  },
-  arrowText: {
-    fontFamily: 'Georgia',
-    fontSize: 38,
-    lineHeight: 44,
   },
   arrowSpacer: {
     alignItems: 'center',
@@ -197,8 +198,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 15,
   },
+  todaysVerseDate: {
+    color: '#358A99',
+  },
   reference: {
-    color: '#ffffff',
     fontSize: 17,
     fontWeight: '700',
     marginTop: 12,
@@ -226,4 +229,27 @@ function formatVerseDate(date: string) {
   const [month, day] = date.split('-').map(Number);
 
   return `${monthNames[month - 1]} ${day}`;
+}
+
+function findTodaysVerseIndex() {
+  const todaysDate = getTodaysDate();
+
+  const todaysIndex = verses.findIndex(
+    function matchesTodaysDate(verse) {
+      return verse.date === todaysDate;
+    },
+  );
+
+  return todaysIndex >= 0 ? todaysIndex : 0;
+}
+
+function getTodaysDate() {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(
+    2,
+    '0',
+  );
+  const day = String(today.getDate()).padStart(2, '0');
+
+  return `${month}-${day}`;
 }

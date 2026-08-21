@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -9,6 +10,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const { notification } = useLocalSearchParams<{
+    notification?: string;
+  }>();
 
   return (
     <ThemedView style={styles.container}>
@@ -21,7 +25,10 @@ export default function HomeScreen() {
           tintColor={isDarkMode ? '#FFFFFF' : '#11181C'}
         />
 
-        <VerseNavigator isDarkMode={isDarkMode} />
+        <VerseNavigator
+          isDarkMode={isDarkMode}
+          key={notification ?? 'daily-verse'}
+        />
       </SafeAreaView>
     </ThemedView>
   );
