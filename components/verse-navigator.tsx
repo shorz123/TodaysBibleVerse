@@ -28,9 +28,7 @@ export function VerseNavigator({
   function showNextVerse() {
     interruptVerseAnimation();
 
-    setVerseIndex(function updateVerseIndex(
-      currentIndex,
-    ) {
+    setVerseIndex(function updateVerseIndex(currentIndex) {
       return (currentIndex + 1) % verses.length;
     });
   }
@@ -38,12 +36,8 @@ export function VerseNavigator({
   function showPreviousVerse() {
     interruptVerseAnimation();
 
-    setVerseIndex(function updateVerseIndex(
-      currentIndex,
-    ) {
-      return (
-        currentIndex - 1 + verses.length
-      ) % verses.length;
+    setVerseIndex(function updateVerseIndex(currentIndex) {
+      return (currentIndex - 1 + verses.length) % verses.length;
     });
   }
 
