@@ -40,12 +40,12 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
   },
   logo: {
     width: '50%',
     aspectRatio: 1672 / 941,
     alignSelf: 'center',
-    marginTop: 24,
+    marginTop: 4,
   },
 });
