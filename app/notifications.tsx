@@ -8,21 +8,29 @@ import {
   Platform,
   Pressable,
   StyleSheet,
+  Switch,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { scheduleDailyNotification } from '@/services/notifications';
+import {
+  cancelDailyNotification,
+  scheduleDailyNotification,
+} from '@/services/notifications';
 
 const SETTINGS_KEY = 'notification-settings';
 
 type NotificationSettings = {
+  enabled?: boolean;
   hour: number;
   minute: number;
 };
 
 export default function NotificationsScreen() {
+  const [reminderEnabled, setReminderEnabled] =
+    useState(false);
   const [selectedTime, setSelectedTime] = useState(
     createTime(9, 0),
   );
@@ -43,6 +51,7 @@ export default function NotificationsScreen() {
       const settings: NotificationSettings =
         JSON.parse(savedSettings);
 
+      setReminderEnabled(settings.enabled ?? true);
       setSelectedTime(
         createTime(settings.hour, settings.minute),
       );
@@ -64,19 +73,53 @@ export default function NotificationsScreen() {
     }
   }
 
+  async function handleReminderToggle(enabled: boolean) {
+    setIsSaving(true);
+
+    try {
+      if (enabled) {
+        await scheduleDailyNotification(
+          selectedTime.getHours(),
+          selectedTime.getMinutes(),
+        );
+      } else {
+        await cancelDailyNotification();
+      }
+
+      setReminderEnabled(enabled);
+      await saveSettings(enabled);
+    } catch (error) {
+      if (enabled) {
+        setReminderEnabled(false);
+      }
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'The reminder could not be updated.';
+
+      Alert.alert('Reminder not updated', message);
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   async function saveReminder() {
     setIsSaving(true);
 
     const settings: NotificationSettings = {
+      enabled: reminderEnabled,
       hour: selectedTime.getHours(),
       minute: selectedTime.getMinutes(),
     };
 
     try {
-      await scheduleDailyNotification(
-        settings.hour,
-        settings.minute,
-      );
+      if (reminderEnabled) {
+        await scheduleDailyNotification(
+          settings.hour,
+          settings.minute,
+        );
+      }
 
       await AsyncStorage.setItem(
         SETTINGS_KEY,
@@ -84,10 +127,14 @@ export default function NotificationsScreen() {
       );
 
       Alert.alert(
-        'Reminder saved',
-        `Your daily reminder is set for ${formatTime(
-          selectedTime,
-        )}.`,
+        reminderEnabled ? 'Reminder saved' : 'Time saved',
+        reminderEnabled
+          ? `Your daily reminder is set for ${formatTime(
+              selectedTime,
+            )}.`
+          : `Your preferred time is ${formatTime(
+              selectedTime,
+            )}. Turn on the reminder when you are ready.`,
       );
     } catch (error) {
       const message =
@@ -101,6 +148,19 @@ export default function NotificationsScreen() {
     }
   }
 
+  async function saveSettings(enabled: boolean) {
+    const settings: NotificationSettings = {
+      enabled,
+      hour: selectedTime.getHours(),
+      minute: selectedTime.getMinutes(),
+    };
+
+    await AsyncStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify(settings),
+    );
+  }
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -112,6 +172,23 @@ export default function NotificationsScreen() {
           Choose when you would like to receive your daily
           Bible verse reminder.
         </ThemedText>
+
+        <View style={styles.toggleRow}>
+          <View style={styles.toggleDescription}>
+            <ThemedText style={styles.toggleTitle}>
+              Daily reminder
+            </ThemedText>
+            <ThemedText style={styles.settingDetails}>
+              Receive one reminder at the selected time.
+            </ThemedText>
+          </View>
+
+          <Switch
+            disabled={isSaving || Platform.OS === 'web'}
+            onValueChange={handleReminderToggle}
+            value={reminderEnabled}
+          />
+        </View>
 
         <ThemedText style={styles.timeHeading}>
           Notification time
@@ -197,6 +274,20 @@ const styles = StyleSheet.create({
   },
   settingDetails: {
     opacity: 0.7,
+  },
+  toggleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 32,
+  },
+  toggleDescription: {
+    flex: 1,
+    paddingRight: 16,
+  },
+  toggleTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 6,
   },
   timeHeading: {
     fontSize: 18,
