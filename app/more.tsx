@@ -15,9 +15,9 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // Replace these placeholders before publishing the app.
 const ABOUT_TEXT =
-  "Hello! Thank you for downloading Today's Bible Verse. This application is comprised of 366 repeating bible verses with a focus on faith fundamentals and evangilism. I hope you have found this application encouraging. If you have any questions or feedback, please email me at the address below, and I will get back to you as soon as I can.\n\nTrino Ochoa";
+  "Hello! Thank you for downloading Today's Bible Verse. This application is comprised of 366 repeating bible verses with a focus on faith fundamentals and evangilism. I hope you have found this application encouraging. If you have any questions or feedback, please email me at the address below, and I will get back to you as soon as I can.\n\nSincerely, \nTrino Ochoa";
 const WEBSITE_URL = 'https://todaysbibleverse.org';
-const SUPPORT_EMAIL = 'todays.bible.verse.inquiry@gmail.com';
+const SUPPORT_EMAIL = 'todaysbibleverse.inquiry@gmail.com';
 const PRIVACY_POLICY_URL = '';
 
 const WEB_ATTRIBUTION_URL =
