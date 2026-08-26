@@ -1,4 +1,4 @@
-# Today's Bible Verse
+# Today's Bible Verse (Mobile App)
 A cross-platform daily Bible verse and reading reminder app built with React Native and Expo.
 
 # App preview
