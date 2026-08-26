@@ -1,52 +1,35 @@
-Today's Bible Verse
-
+# Today's Bible Verse
 A cross-platform daily Bible verse and reading reminder app built with React Native and Expo.
 
-Project status
+# App preview
 
-This project is currently in early development.
+<p align="center">
+  <img src="docs/screenshots/home.jpeg" width="220" alt="Today's Bible Verse home screen" />
+  <img src="docs/screenshots/notifications.jpeg" width="220" alt="Daily reminder settings screen" />
+</p>
 
-Planned features
+<p align="center">
+  <img src="docs/screenshots/more.jpeg" width="220" alt="About, contact, and app links screen" />
+  <img src="docs/screenshots/privacy-policy.jpeg" width="220" alt="Today's Bible Verse privacy policy" />
+</p>
 
-Display one Bible verse each day
+# Project status
+- This project is currently in development.
+- Check out the informational website here: https://todaysbibleverse.org/
 
-Schedule a preferred daily reminder time
+# Features
+- Display one Bible verse each day
+- Schedule a preferred daily reminder time
+- Repeat reminders until the verse is marked as read
+- Store settings and reading status locally
+- Work without requiring an account
+- Coming Soon to Android and iOS
 
-Repeat reminders until the verse is marked as read
+# Technology
+- React Native
+- Expo SDK 54
+- Expo Router
+- TypeScript
+- Cloudfare
 
-Store settings and reading status locally
 
-Work without requiring an account
-
-Support Android and iOS
-
-Technology
-
-React Native
-
-Expo SDK 54
-
-Expo Router
-
-TypeScript
-
-Getting started
-
-Install the dependencies:
-
-npm install
-
-Start the project for Expo Go:
-
-npx expo start --go
-
-If the phone cannot connect over the local network:
-
-npx expo start --go --tunnel
-
-Other available commands:
-
-npm run android
-npm run ios
-npm run web
-npm run lint
