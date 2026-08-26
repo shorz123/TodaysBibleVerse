@@ -30,6 +30,5 @@ A cross-platform daily Bible verse and reading reminder app built with React Nat
 - Expo SDK 54
 - Expo Router
 - TypeScript
-- Cloudfare
 
 
