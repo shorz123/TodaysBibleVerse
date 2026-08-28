@@ -1,23 +1,61 @@
 import { CormorantGaramond_400Regular_Italic } from '@expo-google-fonts/cormorant-garamond';
 import { Ionicons } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useFonts } from 'expo-font';
 import { Tabs, useRouter } from 'expo-router';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
+import {
+  Platform,
+  useWindowDimensions,
+} from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function RootLayout() {
+  const { height, width } = useWindowDimensions();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const isTablet =
+    Device.deviceType === Device.DeviceType.TABLET ||
+    Math.min(width, height) >= 600;
   const [fontsLoaded] = useFonts({
     CormorantGaramond_400Regular_Italic,
   });
+
+  useEffect(
+    function configureOrientationForDevice() {
+      if (Platform.OS === 'web') {
+        return;
+      }
+
+      async function updateOrientation() {
+        if (isTablet) {
+          await ScreenOrientation.unlockAsync();
+          return;
+        }
+
+        await ScreenOrientation.lockAsync(
+          ScreenOrientation.OrientationLock.PORTRAIT_UP,
+        );
+      }
+
+      updateOrientation().catch(
+        function reportOrientationError(error) {
+          console.warn(
+            'Unable to update screen orientation.',
+            error,
+          );
+        },
+      );
+    },
+    [isTablet],
+  );
 
   useEffect(function listenForNotificationTaps() {
     if (Platform.OS === 'web') {

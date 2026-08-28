@@ -226,8 +226,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    alignSelf: 'center',
+    maxWidth: 720,
     padding: 24,
     paddingBottom: 40,
+    width: '100%',
   },
   aboutCard: {
     borderRadius: 16,
