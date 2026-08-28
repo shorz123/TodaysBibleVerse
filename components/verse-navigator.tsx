@@ -142,13 +142,18 @@ export function VerseNavigator({
               styles.divider,
               {
                 backgroundColor: isDarkMode
-                  ? '#FFFFFF'
-                  : '#11181C',
+                  ? 'rgba(255, 255, 255, 0.20)'
+                  : 'rgba(17, 24, 28, 0.16)',
               },
             ]}
           />
 
-          <ThemedText style={styles.reference}>
+          <ThemedText
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
+            numberOfLines={1}
+            style={styles.reference}
+          >
             {currentVerse.reference}
           </ThemedText>
         </ScrollView>
@@ -241,8 +246,8 @@ const styles = StyleSheet.create({
   },
   verseText: {
     fontFamily: 'CormorantGaramond_400Regular_Italic',
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: 40,
+    lineHeight: 50,
     textAlign: 'center',
     width: '100%',
   },
@@ -282,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     marginTop: 12,
-    width: 150,
+    maxWidth: '90%',
     textAlign: 'center',
   },
 });
