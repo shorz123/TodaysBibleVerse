@@ -7,6 +7,7 @@ import {
   Alert,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Switch,
   View,
@@ -164,84 +165,89 @@ export default function NotificationsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="title">
-          Notifications
-        </ThemedText>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <ThemedText type="title">
+            Notifications
+          </ThemedText>
 
-        <ThemedText style={styles.description}>
-          Choose when you would like to receive your daily
-          Bible verse reminder.
-        </ThemedText>
+          <ThemedText style={styles.description}>
+            Choose when you would like to receive your daily
+            Bible verse reminder.
+          </ThemedText>
 
-        <View style={styles.toggleRow}>
-          <View style={styles.toggleDescription}>
-            <ThemedText style={styles.toggleTitle}>
-              Daily reminder
-            </ThemedText>
-            <ThemedText style={styles.settingDetails}>
-              Receive one reminder at the selected time.
-            </ThemedText>
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleDescription}>
+              <ThemedText style={styles.toggleTitle}>
+                Daily reminder
+              </ThemedText>
+              <ThemedText style={styles.settingDetails}>
+                Receive one reminder at the selected time.
+              </ThemedText>
+            </View>
+
+            <Switch
+              disabled={isSaving || Platform.OS === 'web'}
+              onValueChange={handleReminderToggle}
+              value={reminderEnabled}
+            />
           </View>
 
-          <Switch
+          <ThemedText style={styles.timeHeading}>
+            Notification time
+          </ThemedText>
+
+          {Platform.OS === 'web' ? (
+            <ThemedText style={styles.settingDetails}>
+              Configure notifications on your phone.
+            </ThemedText>
+          ) : (
+            <>
+              {Platform.OS === 'android' && (
+                <Pressable
+                  onPress={function openTimePicker() {
+                    setShowAndroidPicker(true);
+                  }}
+                  style={styles.timeButton}
+                >
+                  <ThemedText style={styles.timeText}>
+                    {formatTime(selectedTime)}
+                  </ThemedText>
+                </Pressable>
+              )}
+
+              {(Platform.OS === 'ios' ||
+                showAndroidPicker) && (
+                <DateTimePicker
+                  display={
+                    Platform.OS === 'ios'
+                      ? 'spinner'
+                      : 'default'
+                  }
+                  mode="time"
+                  onChange={handleTimeChange}
+                  value={selectedTime}
+                />
+              )}
+            </>
+          )}
+
+          <Pressable
             disabled={isSaving || Platform.OS === 'web'}
-            onValueChange={handleReminderToggle}
-            value={reminderEnabled}
-          />
-        </View>
-
-        <ThemedText style={styles.timeHeading}>
-          Notification time
-        </ThemedText>
-
-        {Platform.OS === 'web' ? (
-          <ThemedText style={styles.settingDetails}>
-            Configure notifications on your phone.
-          </ThemedText>
-        ) : (
-          <>
-            {Platform.OS === 'android' && (
-              <Pressable
-                onPress={function openTimePicker() {
-                  setShowAndroidPicker(true);
-                }}
-                style={styles.timeButton}
-              >
-                <ThemedText style={styles.timeText}>
-                  {formatTime(selectedTime)}
-                </ThemedText>
-              </Pressable>
-            )}
-
-            {(Platform.OS === 'ios' ||
-              showAndroidPicker) && (
-              <DateTimePicker
-                display={
-                  Platform.OS === 'ios'
-                    ? 'spinner'
-                    : 'default'
-                }
-                mode="time"
-                onChange={handleTimeChange}
-                value={selectedTime}
-              />
-            )}
-          </>
-        )}
-
-        <Pressable
-          disabled={isSaving || Platform.OS === 'web'}
-          onPress={saveReminder}
-          style={[
-            styles.saveButton,
-            (isSaving || Platform.OS === 'web') &&
-              styles.disabled,
-          ]}
-        >
-          <ThemedText style={styles.saveButtonText}>
-            {isSaving ? 'Saving…' : 'Save reminder'}
-          </ThemedText>
-        </Pressable>
+            onPress={saveReminder}
+            style={[
+              styles.saveButton,
+              (isSaving || Platform.OS === 'web') &&
+                styles.disabled,
+            ]}
+          >
+            <ThemedText style={styles.saveButtonText}>
+              {isSaving ? 'Saving…' : 'Save reminder'}
+            </ThemedText>
+          </Pressable>
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -266,7 +272,13 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+  },
+  content: {
+    alignSelf: 'center',
+    flexGrow: 1,
+    maxWidth: 720,
     padding: 24,
+    width: '100%',
   },
   description: {
     marginTop: 24,
