@@ -71,7 +71,11 @@ export default function MoreScreen() {
               </ThemedText>
             </Pressable>
 
-            <View
+            <Pressable
+              accessibilityHint="Opens your email app"
+              accessibilityLabel="Email support"
+              accessibilityRole="link"
+              onPress={openSupportEmail}
               style={[
                 styles.contactInformation,
                 styles.emailInformation,
@@ -82,10 +86,15 @@ export default function MoreScreen() {
                 name="mail-outline"
                 size={20}
               />
-              <ThemedText style={styles.contactText}>
-                {SUPPORT_EMAIL}
-              </ThemedText>
-            </View>
+              <View style={styles.emailText}>
+                <ThemedText style={styles.emailTitle}>
+                  Email Support
+                </ThemedText>
+                <ThemedText style={styles.emailAddress}>
+                  {SUPPORT_EMAIL}
+                </ThemedText>
+              </View>
+            </Pressable>
           </View>
 
           <ThemedText style={styles.linksHeading}>
@@ -199,6 +208,16 @@ async function openExternalLink(url: string) {
   }
 }
 
+function openSupportEmail() {
+  const subject = encodeURIComponent(
+    "Today's Bible Verse Feedback",
+  );
+
+  openExternalLink(
+    `mailto:${SUPPORT_EMAIL}?subject=${subject}`,
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -237,6 +256,17 @@ const styles = StyleSheet.create({
   },
   emailInformation: {
     marginTop: 2,
+  },
+  emailText: {
+    marginLeft: 8,
+  },
+  emailTitle: {
+    fontWeight: '600',
+  },
+  emailAddress: {
+    fontSize: 13,
+    marginTop: 1,
+    opacity: 0.7,
   },
   linksHeading: {
     fontSize: 16,
