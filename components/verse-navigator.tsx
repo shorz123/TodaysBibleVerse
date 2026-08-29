@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   PanResponder,
   Platform,
   Pressable,
@@ -24,16 +26,29 @@ export function VerseNavigator({
   const verseScrollView = useRef<ScrollView>(null);
   const scrollViewportHeight = useRef(0);
   const scrollContentHeight = useRef(0);
+  const scrollOffset = useRef(0);
+  const [hasMoreBelow, setHasMoreBelow] = useState(false);
   const [verseIndex, setVerseIndex] = useState(
     findTodaysVerseIndex,
   );
 
   const currentVerse = verses[verseIndex];
 
-  function flashIndicatorWhenScrollable() {
-    const contentIsScrollable = scrollContentHeight.current > scrollViewportHeight.current + 1;
+  function updateScrollState(
+    shouldFlashIndicator = false,
+  ) {
+    const remainingScrollDistance =
+      scrollContentHeight.current -
+      scrollViewportHeight.current -
+      scrollOffset.current;
 
-    if (contentIsScrollable) {
+    const contentIsScrollable =
+      scrollContentHeight.current >
+      scrollViewportHeight.current + 1;
+
+    setHasMoreBelow(remainingScrollDistance > 2);
+
+    if (contentIsScrollable && shouldFlashIndicator) {
       requestAnimationFrame(
         function showScrollIndicator() {
           verseScrollView.current?.flashScrollIndicators();
@@ -45,7 +60,7 @@ export function VerseNavigator({
   function handleScrollLayout(event: LayoutChangeEvent) {
     scrollViewportHeight.current =
       event.nativeEvent.layout.height;
-    flashIndicatorWhenScrollable();
+    updateScrollState(true);
   }
 
   function handleContentSizeChange(
@@ -53,10 +68,27 @@ export function VerseNavigator({
     height: number,
   ) {
     scrollContentHeight.current = height;
-    flashIndicatorWhenScrollable();
+    updateScrollState(true);
+  }
+
+  function handleVerseScroll(
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) {
+    scrollOffset.current =
+      event.nativeEvent.contentOffset.y;
+    updateScrollState();
+  }
+
+  function scrollVerseToBottom() {
+    verseScrollView.current?.scrollToEnd({
+      animated: true,
+    });
   }
 
   function showNextVerse() {
+    scrollOffset.current = 0;
+    setHasMoreBelow(false);
+
     verseScrollView.current?.scrollTo({
       animated: false,
       y: 0,
@@ -70,6 +102,9 @@ export function VerseNavigator({
   }
 
   function showPreviousVerse() {
+    scrollOffset.current = 0;
+    setHasMoreBelow(false);
+
     verseScrollView.current?.scrollTo({
       animated: false,
       y: 0,
@@ -128,8 +163,10 @@ export function VerseNavigator({
           contentContainerStyle={styles.verseContent}
           onContentSizeChange={handleContentSizeChange}
           onLayout={handleScrollLayout}
+          onScroll={handleVerseScroll}
           persistentScrollbar={Platform.OS === 'android'}
           ref={verseScrollView}
+          scrollEventThrottle={16}
           showsVerticalScrollIndicator
           style={styles.verseScroll}
         >
@@ -157,6 +194,32 @@ export function VerseNavigator({
             {currentVerse.reference}
           </ThemedText>
         </ScrollView>
+
+        {hasMoreBelow && (
+          <Pressable
+            accessibilityLabel="Scroll to the bottom of the verse"
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={scrollVerseToBottom}
+            style={[
+              styles.scrollButton,
+              {
+                backgroundColor: isDarkMode
+                  ? 'rgba(50, 50, 50, 0.90)'
+                  : 'rgba(235, 235, 235, 0.95)',
+                borderColor: isDarkMode
+                  ? 'rgba(255, 255, 255, 0.18)'
+                  : 'rgba(0, 0, 0, 0.12)',
+              },
+            ]}
+          >
+            <Ionicons
+              color={isDarkMode ? '#FFFFFF' : '#444444'}
+              name="arrow-down"
+              size={20}
+            />
+          </Pressable>
+        )}
       </View>
 
       <View style={styles.navigationArea}>
@@ -222,6 +285,7 @@ const styles = StyleSheet.create({
   verseTextArea: {
     flex: 1,
     marginBottom: 20,
+    position: 'relative',
     width: '100%',
   },
   verseScroll: {
@@ -235,6 +299,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 20,
+  },
+  scrollButton: {
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    bottom: 8,
+    elevation: 3,
+    height: 40,
+    justifyContent: 'center',
+    left: '50%',
+    marginLeft: -20,
+    position: 'absolute',
+    shadowColor: '#000000',
+    shadowOffset: {
+      height: 1,
+      width: 0,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 3,
+    width: 40,
   },
   navigationArea: {
     alignItems: 'center',
