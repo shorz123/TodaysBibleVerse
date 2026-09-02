@@ -2,7 +2,13 @@
 A cross-platform daily Bible verse and reading reminder app built with React Native and Expo.
 
 # App preview
-
+<p align="center">
+  <img
+    src="docs/screenshots/app-store-listing.png"
+    width="700"
+    alt="Today's Bible Verse listing on the Apple App Store"
+  />
+</p>
 <p align="center">
   <img src="docs/screenshots/home.jpeg" width="220" alt="Today's Bible Verse home screen" />
   <img src="docs/screenshots/notifications.jpeg" width="220" alt="Daily reminder settings screen" />
