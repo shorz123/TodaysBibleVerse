@@ -14,8 +14,10 @@ A cross-platform daily Bible verse and reading reminder app built with React Nat
 </p>
 
 # Project status
-- This project is currently in development.
+- This project is currently deployed.
 - Check out the informational website here: https://todaysbibleverse.org/
+- Mobile App (iOS) https://apps.apple.com/us/app/todays-bible-verse/id6806392025
+- Android - Currently in Testing (pre-deployment)
 
 # Features
 - Display one Bible verse each day
