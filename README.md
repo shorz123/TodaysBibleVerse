@@ -4,7 +4,7 @@ A cross-platform daily Bible verse and reading reminder app built with React Nat
 # App preview
 <p align="center">
   <img
-    src="docs/screenshots/app-store-listing.png"
+    src="docs/screenshots/todays bible verse app store.png"
     width="700"
     alt="Today's Bible Verse listing on the Apple App Store"
   />
